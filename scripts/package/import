@@ -24,6 +24,8 @@ platform::command_exists pip3 && output::header "Importing Python apps from $PYT
 
 platform::command_exists code && output::header "Importing VSCode extensions from $DOTFILES_PATH/editors/code/extensions.txt" && package::code_import code
 
+platform::command_exists antigravity && output::header "Importing Antigravity extensions from $DOTFILES_PATH/editors/antigravity/extensions.txt" && package::code_import antigravity
+
 if platform::command_exists volta; then
 	output::header "Importing Volta apps from $VOLTA_DUMP_FILE_PATH" && package::volta_import
 elif platform::command_exists npm; then
