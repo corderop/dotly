@@ -5,8 +5,6 @@ set -uo pipefail
 source "$DOTLY_PATH/scripts/core/_main.sh"
 source "$DOTLY_PATH/scripts/package/src/package_managers/brew.sh"
 source "$DOTLY_PATH/scripts/package/src/package_managers/cargo.sh"
-source "$DOTLY_PATH/scripts/package/src/package_managers/composer.sh"
-source "$DOTLY_PATH/scripts/package/src/package_managers/gem.sh"
 source "$DOTLY_PATH/scripts/package/src/package_managers/mas.sh"
 source "$DOTLY_PATH/scripts/package/src/package_managers/npm.sh"
 source "$DOTLY_PATH/scripts/package/src/package_managers/pip.sh"
@@ -23,8 +21,6 @@ output::write "If you want to debug what's happening behind the scenes, you can 
 platform::command_exists mas && output::h2 '🍎 App Store' && mas::update_all
 platform::command_exists brew && output::h2 '🍺 Brew' && brew::update_all
 platform::command_exists pip3 && output::h2 '🐍 pip' && pip::update_all
-platform::command_exists composer && output::h2 '🐘 Composer' && composer::update_all
-platform::command_exists gem && ! gem::is_macos_default && output::h2 '♦️  gem' && gem::update_all
 platform::command_exists npm && output::h2 '🌈 npm' && npm::update_all
 platform::command_exists cargo && output::h2 '📦 cargo' && cargo::update_all
 
