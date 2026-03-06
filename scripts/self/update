@@ -10,9 +10,8 @@ source "$DOTLY_PATH/scripts/core/_main.sh"
 ##?    update
 docs::parse "$@"
 
-cd "$DOTLY_PATH"
-git pull >/dev/null 2>&1
-git submodule update --init --recursive >/dev/null 2>&1
+cd "$DOTFILES_PATH"
+git submodule update --init --remote modules/dotly
 
 dot shell zsh reload_completions
 
