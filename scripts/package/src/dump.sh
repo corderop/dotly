@@ -71,12 +71,12 @@ package::snap_import() {
 package::python_dump() {
 	mkdir -p "$DOTFILES_PATH/langs/python"
 
-	pip3 freeze >"$PYTHON_DUMP_FILE_PATH"
+	uv tool list | grep -v '^ *-' | awk '{print $1}' >"$PYTHON_DUMP_FILE_PATH"
 }
 
 package::python_import() {
 	if [ -f "$PYTHON_DUMP_FILE_PATH" ]; then
-		pip3 install -r "$PYTHON_DUMP_FILE_PATH"
+		xargs -I_ uv tool install "_" <"$PYTHON_DUMP_FILE_PATH"
 	fi
 }
 

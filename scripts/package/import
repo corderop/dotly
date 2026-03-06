@@ -20,7 +20,7 @@ platform::command_exists apt-mark && output::header "Importing Apt apps from $AP
 
 platform::command_exists snap && output::header "Importing Snap apps from $SNAP_DUMP_FILE_PATH" && package::snap_import
 
-platform::command_exists pip3 && output::header "Importing Python apps from $PYTHON_DUMP_FILE_PATH" && package::python_import
+platform::command_exists uv && output::header "Importing Python apps from $PYTHON_DUMP_FILE_PATH" && package::python_import
 
 platform::command_exists code && output::header "Importing VSCode extensions from $DOTFILES_PATH/editors/code/extensions.txt" && package::code_import code
 
