@@ -7,6 +7,7 @@ source "$DOTLY_PATH/scripts/package/src/package_managers/brew.sh"
 source "$DOTLY_PATH/scripts/package/src/package_managers/cargo.sh"
 source "$DOTLY_PATH/scripts/package/src/package_managers/mas.sh"
 source "$DOTLY_PATH/scripts/package/src/package_managers/npm.sh"
+source "$DOTLY_PATH/scripts/package/src/package_managers/pnpm.sh"
 source "$DOTLY_PATH/scripts/package/src/package_managers/uv.sh"
 
 ##? Update all packages
@@ -22,6 +23,7 @@ platform::command_exists mas && output::h2 '🍎 App Store' && mas::update_all
 platform::command_exists brew && output::h2 '🍺 Brew' && brew::update_all
 platform::command_exists uv && output::h2 '🐍 uv' && uv::update_all
 platform::command_exists npm && output::h2 '🌈 npm' && npm::update_all
+platform::command_exists pnpm && output::h2 '🌈 pnpm' && pnpm::update_all
 platform::command_exists cargo && output::h2 '📦 cargo' && cargo::update_all
 
 platform::command_exists tldr && output::h2 '📜 tldr database' && tldr --update >/dev/null 2>&1 && output::answer "Database updated"

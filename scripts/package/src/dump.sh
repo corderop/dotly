@@ -8,6 +8,7 @@ fi
 
 APT_DUMP_FILE_PATH="$DOTFILES_PATH/os/linux/apt/packages.txt"
 NPM_DUMP_FILE_PATH="$DOTFILES_PATH/langs/js/global_modules.txt"
+PNPM_DUMP_FILE_PATH="$DOTFILES_PATH/langs/js/global_modules.pnpm.txt"
 PACMAN_DUMP_FILE_PATH="$DOTFILES_PATH/os/linux/pacman/packages.txt"
 PYTHON_DUMP_FILE_PATH="$DOTFILES_PATH/langs/python/requirements.txt"
 SNAP_DUMP_FILE_PATH="$DOTFILES_PATH/os/linux/snap/packages.txt"
@@ -94,6 +95,18 @@ package::npm_dump() {
 package::npm_import() {
 	if [ -f "$NPM_DUMP_FILE_PATH" ]; then
 		xargs -I_ npm install -g "_" <"$NPM_DUMP_FILE_PATH"
+	fi
+}
+
+package::pnpm_dump() {
+	mkdir -p "$DOTFILES_PATH/langs/js"
+
+	pnpm ls -g --json | jq -r '.[0].dependencies | keys[]' >"$PNPM_DUMP_FILE_PATH"
+}
+
+package::pnpm_import() {
+	if [ -f "$PNPM_DUMP_FILE_PATH" ]; then
+		xargs -I_ pnpm install -g "_" <"$PNPM_DUMP_FILE_PATH"
 	fi
 }
 

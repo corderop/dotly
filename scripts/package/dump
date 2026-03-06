@@ -10,7 +10,7 @@ source "$DOTLY_PATH/scripts/package/src/dump.sh"
 ##?  * Antigravity
 ##?  * Snap
 ##?  * Python
-##?  * Volta.sh or NPM
+##?  * Volta.sh, PNPM or NPM
 ##?  * Winget
 ##?  * asdf
 ##?
@@ -32,6 +32,8 @@ platform::command_exists antigravity && package::code_dump antigravity && output
 
 if platform::command_exists volta; then
 	package::volta_dump && output::answer "Volta apps dumped on $VOLTA_DUMP_FILE_PATH"
+elif platform::command_exists pnpm; then
+	package::pnpm_dump && output::answer "PNPM apps dumped on $PNPM_DUMP_FILE_PATH"
 elif platform::command_exists npm; then
 	package::npm_dump && output::answer "NPM apps dumped on $NPM_DUMP_FILE_PATH"
 fi
