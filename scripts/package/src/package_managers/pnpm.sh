@@ -1,15 +1,25 @@
 pnpm::update_all() {
-	outdated=$(pnpm outdated -g | tail -n +2)
+	outdated=$(pnpm outdated -g --format list)
 
 	if [ -n "$outdated" ]; then
-		echo "$outdated" | while IFS= read -r outdated_app; do
-			package=$(echo "$outdated_app" | awk '{print $1}')
-			current_version=$(echo "$outdated_app" | awk '{print $2}')
-			new_version=$(echo "$outdated_app" | awk '{print $4}')
+		package=""
+		echo "$outdated" | while read -r line; do
+			# Skip empty lines
+			[ -z "$line" ] && continue
+
+			# If the line doesn't contain '=>', it's a package name
+			if [[ "$line" != *"=>"* ]]; then
+				package="$line"
+				continue
+			fi
+
+			# Otherwise, it's the versions line: current_version => new_version
+			current_version=$(echo "$line" | awk '{print $1}')
+			new_version=$(echo "$line" | awk '{print $3}')
 
 			info=$(pnpm view "$package")
-			summary=$(echo "$info" | tail -n +3 | head -n 1)
-			url=$(echo "$info" | tail -n +4 | head -n 1)
+			summary=$(echo "$info" | sed -n '3p')
+			url=$(echo "$info" | sed -n '4p')
 
 			output::write "🌈 $package"
 			output::write "├ $current_version -> $new_version"
