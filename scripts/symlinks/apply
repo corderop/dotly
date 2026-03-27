@@ -4,9 +4,74 @@ set -euo pipefail
 
 source "$DOTLY_PATH/scripts/core/_main.sh"
 
+symlinks::backup_file() {
+	local file="$1"
+	local backup_file="${file}.bak"
+
+	if [[ -e "$file" && ! -L "$file" ]]; then
+		if [[ -d "$file" ]]; then
+			backup_file="${file}.bak"
+			mv "$file" "$backup_file"
+			log::success "Backed up directory '$file' to '$backup_file'"
+		else
+			cp "$file" "$backup_file"
+			log::success "Backed up file '$file' to '$backup_file'"
+		fi
+	fi
+}
+
+symlinks::backup_existing_targets() {
+	local -r config_file="$1"
+
+	local link_section_started=false
+	local link_key=""
+	local link_value=""
+
+	while IFS= read -r line || [[ -n "$line" ]]; do
+		# Remove leading/trailing whitespace
+		line="$(echo "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+
+		# Skip empty lines and comments
+		[[ -z "$line" || "$line" =~ ^# ]] && continue
+
+		# Check for link section start
+		if [[ "$line" == "- link:" ]]; then
+			link_section_started=true
+			continue
+		fi
+
+		# Check if we're in link section
+		if $link_section_started; then
+			# Check for new section start (ends link section)
+			if [[ "$line" =~ ^- ]]; then
+				link_section_started=false
+				continue
+			fi
+
+			# Parse "key: value" format
+			if [[ "$line" =~ ^([^:]+): ]]; then
+				local key="${BASH_REMATCH[1]}"
+				local value="${line#*:}"
+				value="$(echo "$value" | sed 's/^[[:space:]]*//')"
+
+				# Expand home directory
+				key="${key/#\~/$HOME}"
+
+				# Backup if file/directory exists and is not a symlink
+				if [[ -e "$key" && ! -L "$key" ]]; then
+					symlinks::backup_file "$key"
+				fi
+			fi
+		fi
+	done < "$config_file"
+}
+
 symlinks::apply() {
 	local -r CONFIG="$DOTFILES_PATH/symlinks/$1"
 	shift
+
+	# Backup existing files before applying symlinks
+	symlinks::backup_existing_targets "$CONFIG"
 
 	echo
 	"$DOTLY_PATH/modules/dotbot/bin/dotbot" -d "$DOTFILES_PATH" -c "$CONFIG" "$@"
